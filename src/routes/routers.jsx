@@ -4,6 +4,9 @@ import Home from '../pages/Home/Home';
 import About from '../pages/About/About';
 import Contact from '../pages/Contact/Contact';
 import Landing from '../pages/Landing/Landing';
+import Jobs from '../pages/Jobs/Jobs';
+import CreateItem from '../pages/Jobs/CreateItem/CreateItem';
+import UpdateItem from '../pages/Jobs/UpdateItem/UpdateItem';
 
 const routers = createBrowserRouter([
     {
@@ -15,11 +18,6 @@ const routers = createBrowserRouter([
                 path: `/`,
                 element: <Landing></Landing>
             },
-            /* if logged go to home page. */
-            {
-                path: `home`,
-                element: <Home></Home>
-            },
             {
                 path: `about`,
                 element: <About></About>
@@ -28,8 +26,27 @@ const routers = createBrowserRouter([
                 path: `contact`,
                 element: <Contact></Contact>
             },
-        ]
-    }
+            /* if logged go to home page. */
+            {
+                path: `home`,
+                element: <Home></Home>
+            },
+            {
+                path: `jobs`,
+                element: <Jobs></Jobs>,
+                children: [
+                    {
+                        path: `create-item`,
+                        element: <CreateItem></CreateItem>
+                    },
+                    {
+                        path: `update-item`,
+                        element: <UpdateItem></UpdateItem>
+                    },
+                ],
+            },
+        ],
+    },
 ]);
 
 export default routers;
