@@ -34,16 +34,14 @@ const routers = createBrowserRouter([
             {
                 path: `jobs`,
                 element: <Jobs></Jobs>,
-                children: [
-                    {
-                        path: `create-item`,
-                        element: <CreateItem></CreateItem>
-                    },
-                    {
-                        path: `update-item`,
-                        element: <UpdateItem></UpdateItem>
-                    },
-                ],
+            },
+            {
+                path: `jobs/create-item`,
+                element: <CreateItem></CreateItem>
+            },
+            {
+                path: `jobs/update-item`,
+                element: <UpdateItem></UpdateItem>
             },
         ],
     },

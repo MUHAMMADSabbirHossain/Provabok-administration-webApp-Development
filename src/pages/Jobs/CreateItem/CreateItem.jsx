@@ -14,18 +14,19 @@ const CreateItem = () => {
         event.preventDefault();
 
         const form = new FormData(event.currentTarget);
-        const title = form.get("title");
-        const vacancy = form.get("vacancy");
-        const orgName = form.get("orgName");
-        const category = form.get("category");
-        const salary = form.get("salary");
-        const radioGovt = form.get("radioGovt");
-        const radioOrh = form.get("radio-orh");
-        const email = form.get("email");
-        const address = form.get("address");
-        const resourceLink = form.get("resourceLink");
-        const imagefile = form.get("imagefile");
-        const details = form.get("details");
+        const title = form.get(`title`);
+        const vacancy = form.get(`vacancy`);
+        const orgName = form.get(`orgName`);
+        const category = form.get(`category`);
+        const salary = form.get(`salary`);
+        const radioGovt = form.get(`radioGovt`);
+        const radioOrh = form.get(`radio-orh`);
+        const email = form.get(`email`);
+        const address = form.get(`address`);
+        const lastDate = form.get(`lastDate`)
+        const imagefile = form.get(`imagefile`);
+        const resourceLink = form.get(`resourceLink`);
+        const details = form.get(`details`);
         // console.log(title, category, salary, imageUrl, details);
 
         const jobItem = {
@@ -38,6 +39,7 @@ const CreateItem = () => {
             radioOrh,
             email,
             address,
+            lastDate,
             resourceLink,
             details
         };
@@ -202,7 +204,7 @@ const CreateItem = () => {
                                 <label className="label">
                                     <span className="label-text">Last-Date</span>
                                 </label>
-                                <input type="date" name="lastDate" id="" className="input input-bordered" placeholder="" />
+                                <input type="date" name="lastDate" id="lastDate" className="input input-bordered" placeholder="" />
                             </div>
 
                             {/* <div className="form-control shadow-2xl">
