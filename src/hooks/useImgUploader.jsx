@@ -3,7 +3,7 @@ import useAxiosPrivate from "./useAxiosPrivate";
 
 const useImgUploader = () => {
     const imgHostingKey = import.meta.env.VITE_IMAGE_APIKEY;
-    const imgHostingApi = `https://api.imgbb.com/1/upload?key=${imgHostingKey}`;
+    const imgHostingApi = `https://api.imgbb.com/1/upload?expiration=15552000&key=${imgHostingKey}`;
     const axiosPrivate = useAxiosPrivate();
 
     const imgUploader = async (imgInputedFile) => {
