@@ -1,16 +1,47 @@
-import Swal from "sweetalert2";
-import useImgUploader from "../../../hooks/useImgUploader";
+import { useParams } from "react-router-dom";
 import useJobCategories from "../../../hooks/useJobCategories";
+import useJobs from "../../../hooks/useJobs";
+import useImgUploader from "../../../hooks/useImgUploader";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
-const CreateItem = () => {
+const EditItem = () => {
 
     const { categories } = useJobCategories();
+    const { id } = useParams();
+    const { jobs, refetch } = useJobs();
+    const editedItem = jobs.find(seletedjob => seletedjob._id === id);
     const { imgUploader } = useImgUploader();
     const axiosPrivate = useAxiosPrivate();
-    // console.log(categories);
+    console.log(id, editedItem);
 
-    const handleCreateItem = async (event) => {
+    const updateDB = async (jobItem) => {
+
+        const serverRes = await axiosPrivate.patch(`/v1/jobs/edit-item/${id}`, jobItem);
+        console.log(serverRes?.data);
+
+        if (serverRes?.data?.modifiedCount === 1) {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Your job item has been saved successfully.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong!",
+                footer: '<a href="#">Server or DataBase (make sure you modified any things) might get any issue, please try again.</a>',
+            });
+        };
+
+        refetch();
+    };
+
+
+    const handleEditItem = async (event) => {
         event.preventDefault();
 
         const form = new FormData(event.currentTarget);
@@ -27,7 +58,6 @@ const CreateItem = () => {
         const imagefile = form.get(`imagefile`);
         const resourceLink = form.get(`resourceLink`);
         const details = form.get(`details`);
-        // console.log(title, category, salary, imageUrl, details);
 
         const jobItem = {
             title,
@@ -43,42 +73,46 @@ const CreateItem = () => {
             resourceLink,
             details
         };
-        // console.log(jobItem);
+        console.log(jobItem);
 
-        // send image to img server.
-        const imgUploadedRes = await imgUploader(imagefile);
-        // const imgUploadedRes = { display_url: true }; //testing
-        // console.log(imgUploadedRes);
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then(async (result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
 
-        if (imgUploadedRes?.display_url) {
-            // add the img url link in the jobItem object
-            jobItem.image = imgUploadedRes;
-            // console.log(jobItem);
+                // console.log(imagefile);
+                if (imagefile?.size > 0) { // if user has changed image file
 
-            // seve data in Database
-            const serverRes = await axiosPrivate.post(`/v1/jobs/create-item`, jobItem);
-            console.log(serverRes);
+                    // send image to img server.
+                    const imgUploadedRes = await imgUploader(imagefile);
 
-            if (serverRes?.data?.insertedId) {
-                // showing notification after successfully data inserted in DB.
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Your job item has been saved successfully.",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong!",
-                    footer: '<a href="#">Server or DataBase might get any issue, please try again.</a>',
-                });
+                    if (imgUploadedRes?.display_url) {
+                        // add the updated img url link in the jobItem object
+                        jobItem.image = imgUploadedRes;
+                    };
 
-                return;
-            };
-        }
+                    updateDB(jobItem);
+                } else { // if user hasn't changed the image file.
+
+                    // add the previous img url link in the jobItem object
+                    jobItem.image = editedItem.image;
+                    console.log(jobItem);
+
+                    updateDB(jobItem);
+                };
+
+            } else if (result.isDenied) {
+                Swal.fire("Changes are not saved", "", "info");
+            }
+        });
+
+
+
     };
 
 
@@ -91,56 +125,49 @@ const CreateItem = () => {
                 <div className="hero-content flex-col lg:flex-row-reverse m-10 mx-auto">
 
                     <div className="card shrink-0 w-full shadow-2xl bg-base-100">
-                        <form onSubmit={handleCreateItem} className="card-body space-y-5">
+                        <form onSubmit={handleEditItem} className="card-body space-y-5">
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Title</span>
                                 </label>
-                                <input type="text" name='title' id='title' placeholder="" className="input input-bordered" />
+                                <input type="text" name='title' id='title' placeholder="" className="input input-bordered" defaultValue={editedItem?.title} />
                             </div>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Vacancy</span>
                                 </label>
-                                <input type="number" name="vacancy" id="vacancy" className="input input-bordered" placeholder="0" />
+                                <input type="number" name="vacancy" id="vacancy" className="input input-bordered" placeholder="0" defaultValue={editedItem?.vacancy} />
                             </div>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Organization</span>
                                 </label>
-                                <input type="text" name="orgName" id="orgName" className="input input-bordered" placeholder="Provabok" />
+                                <input type="text" name="orgName" id="orgName" className="input input-bordered" placeholder="Provabok" defaultValue={editedItem?.orgName} />
                             </div>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Salary (fixed or from-to)</span>
                                 </label>
-                                <input type="text" name='salary' placeholder="follow 100000 or 10000-15000" className="input input-bordered" />
+                                <input type="text" name='salary' placeholder="follow 100000 or 10000-15000" className="input input-bordered" defaultValue={editedItem?.salary} />
                             </div>
-
-                            {/* <div className="from-control shadow-2xl p-2 rounded-xl">
-                                <label className="label">
-                                    <span className="label-text">Salary</span>
-                                </label>
-                                <input type="range" name="" id="" className="range input input-bordered my-2" min={0} max={1000000} defaultValue={100000} />
-                            </div> */}
 
                             <div className="grid grid-cols-2 border input-bordered shadow-2xl p-4 rounded-xl">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Gov't</span>
                                     </label>
-                                    <input type="radio" name="radioGovt" className="radio" value={`govt`} />
+                                    <input type="radio" name="radioGovt" className="radio" value={`govt`} defaultChecked={editedItem?.radioGovt} />
                                 </div>
 
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Non-Gov't</span>
                                     </label>
-                                    <input type="radio" name="radioGovt" className="radio" value={`non-govt`} />
+                                    <input type="radio" name="radioGovt" className="radio" value={`non-govt`} defaultChecked={editedItem?.radioGovt} />
                                 </div>
                             </div>
 
@@ -149,21 +176,21 @@ const CreateItem = () => {
                                     <label className="label">
                                         <span className="label-text">Onsite</span>
                                     </label>
-                                    <input type="radio" name="radio-orh" className="radio" value={`onsite`} />
+                                    <input type="radio" name="radio-orh" className="radio" value={`onsite`} defaultChecked={editedItem?.radioOrh} />
                                 </div>
 
                                 <div className="form-control ">
                                     <label className="label">
                                         <span className="label-text">Remote</span>
                                     </label>
-                                    <input type="radio" name="radio-orh" className="radio" value={`remote`} />
+                                    <input type="radio" name="radio-orh" className="radio" value={`remote`} defaultChecked={editedItem?.radioOrh} />
                                 </div>
 
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Hybrid</span>
                                     </label>
-                                    <input type="radio" name="radio-orh" className="radio" value={`hybrid`} />
+                                    <input type="radio" name="radio-orh" className="radio" value={`hybrid`} defaultChecked={editedItem?.radioOrh} />
                                 </div>
                             </div>
 
@@ -172,72 +199,62 @@ const CreateItem = () => {
                                     <span className="label-text">Category</span>
                                 </div>
                                 <select name='category' className="select select-bordered" defaultValue="default">
-                                    <option disabled value="default" >Select one</option>
+                                    <option disabled defaultValue={editedItem?.category}>Select one</option>
                                     {
                                         categories.map((category, index) => <option value={category.value} key={index}>{category.name}</option>)
                                     }
                                 </select>
                             </label>
 
-                            {/* <div className="form-control shadow-2xl p-2 rounded-xl">
-                                <label className="label">
-                                    <span className="label-text">Phone</span>
-                                </label>
-                                <input type="tel" name="phone" id="" className="input input-bordered" placeholder="+88012345678910" />
-                            </div> */}
-
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Email</span>
                                 </label>
-                                <input type="email" name="email" id="email" className="input input-bordered" placeholder="example@mail.com" />
+                                <input type="email" name="email" id="email" className="input input-bordered" placeholder="example@mail.com" defaultValue={editedItem?.email} />
                             </div>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Address</span>
                                 </label>
-                                <input type="text" name="address" id="" className="input input-bordered" placeholder="road-name, road-name, road-type, city, state, country, zipcode/postcode" />
+                                <input type="text" name="address" id="" className="input input-bordered" placeholder="road-name, road-name, road-type, city, state, country, zipcode/postcode" defaultValue={editedItem?.address} />
                             </div>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Last-Date</span>
                                 </label>
-                                <input type="date" name="lastDate" id="lastDate" className="input input-bordered" placeholder="" />
+                                <input type="date" name="lastDate" id="lastDate" className="input input-bordered" placeholder="" defaultValue={editedItem?.lastDate} />
                             </div>
-
-                            {/* <div className="form-control shadow-2xl">
-                                <label className="label">
-                                    <span className="label-text"></span>
-                                </label>
-                                <input type="" name="" id="" className="input input-bordered" placeholder="" />
-                            </div> */}
-
 
                             <label className="form-control shadow-2xl w-full max-w-xs p-2 rounded-xl">
                                 <div className="label">
                                     <span className="label-text">Image <p className='inline'>(up to 32mb)</p></span>
                                 </div>
                                 <input name='imagefile' type="file" className="file-input file-input-bordered w-full max-w-xs" />
+
+                                <div className="label">
+                                    <span className="label-text">Current Image:  <p className='inline'>{editedItem?.image.display_url}</p></span>
+                                </div>
+                                <img src={editedItem?.image?.display_url} alt="Job image" className="rounded-lg my-1" />
                             </label>
 
                             <div className="form-control shadow-2xl p-2 rounded-xl">
                                 <label className="label">
                                     <span className="label-text">Resource Link</span>
                                 </label>
-                                <input type="url" name="resourceLink" className="input input-bordered" placeholder={`https://example.com`} />
+                                <input type="url" name="resourceLink" className="input input-bordered" placeholder={`https://example.com`} defaultValue={editedItem?.resourceLink} />
                             </div>
 
                             <label className="form-control shadow-2xl p-2 rounded-xl">
                                 <div className="label">
                                     <span className="label-text">Details <p className='inline'>(up to 150 alphabets)</p></span>
                                 </div>
-                                <textarea name='details' className="textarea textarea-bordered h-24" placeholder="Write details about the job..." ></textarea>
+                                <textarea name='details' className="textarea textarea-bordered h-24" placeholder="Write details about the job..." defaultValue={editedItem?.details}></textarea>
                             </label>
 
                             <div className="form-control shadow-2xl">
-                                <input className="btn btn-primary" type="submit" value="Add Item" />
+                                <input className="btn btn-primary" type="submit" value="Save Item" />
                             </div>
                         </form>
                     </div>
@@ -247,4 +264,4 @@ const CreateItem = () => {
     );
 };
 
-export default CreateItem;
+export default EditItem;

@@ -6,7 +6,7 @@ import Contact from '../pages/Contact/Contact';
 import Landing from '../pages/Landing/Landing';
 import Jobs from '../pages/Jobs/Jobs';
 import CreateItem from '../pages/Jobs/CreateItem/CreateItem';
-import UpdateItem from '../pages/Jobs/UpdateItem/UpdateItem';
+import EditItem from '../pages/Jobs/EditItem/EditItem';
 
 const routers = createBrowserRouter([
     {
@@ -40,8 +40,8 @@ const routers = createBrowserRouter([
                 element: <CreateItem></CreateItem>
             },
             {
-                path: `jobs/update-item`,
-                element: <UpdateItem></UpdateItem>
+                path: `jobs/edit-item/:id`,
+                element: <EditItem></EditItem>
             },
         ],
     },

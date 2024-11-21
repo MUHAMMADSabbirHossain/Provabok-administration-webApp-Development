@@ -3,6 +3,7 @@ import useJobs from "../../hooks/useJobs";
 import { MdDelete } from "react-icons/md";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Swal from "sweetalert2";
+import { RiFileEditFill } from "react-icons/ri";
 
 const Jobs = () => {
 
@@ -84,7 +85,7 @@ const Jobs = () => {
                                     <td>{job?.address}</td>
                                     <td>{job?.lastDate}</td>
                                     <td>
-                                        <button className="mx-2">UP</button>
+                                        <Link to={`/jobs/edit-item/${job._id}`}><button className="mx-2 text-yellow-500" ><RiFileEditFill /></button></Link>
                                         <button className="mx-2 text-red-600 text" onClick={() => handleDeleteJobItem(job)}><MdDelete />
                                         </button>
                                     </td>
