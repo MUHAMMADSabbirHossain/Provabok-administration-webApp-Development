@@ -53,13 +53,13 @@ const CreateItem = () => {
         if (imgUploadedRes?.display_url) {
             // add the img url link in the jobItem object
             jobItem.image = imgUploadedRes;
-            console.log(jobItem);
+            // console.log(jobItem);
 
             // seve data in Database
             const serverRes = await axiosPrivate.post(`/v1/jobs/create-item`, jobItem);
             console.log(serverRes);
 
-            if (serverRes?.data?.acknowledged === true) {
+            if (serverRes?.data?.insertedId) {
                 // showing notification after successfully data inserted in DB.
                 Swal.fire({
                     position: "center",

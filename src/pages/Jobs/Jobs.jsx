@@ -1,10 +1,55 @@
 import { Link } from "react-router-dom";
 import useJobs from "../../hooks/useJobs";
+import { MdDelete } from "react-icons/md";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
 const Jobs = () => {
 
-    const { jobs } = useJobs();
+    const { jobs, refetch } = useJobs();
+    const axiosPrivate = useAxiosPrivate();
     console.log(jobs);
+
+    const handleDeleteJobItem = async (job) => {
+        // console.log(job);
+
+        // confirm alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // delete api req from database
+                const delItemRes = await axiosPrivate.delete(`/v1/jobs/del-item/${job._id}`);
+                console.log(delItemRes.data);
+
+                // successfully deleted
+                if (delItemRes.data?.deletedCount === 1) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+
+                    refetch();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        footer: '<a href="#">Server or database might get any issue, please try again.</a>'
+                    });
+
+                    return;
+                };
+            };
+        });
+    };
 
     return (
         <div>
@@ -15,12 +60,12 @@ const Jobs = () => {
             </div>
 
 
-            <section>
-                <div className="overflow-x-auto">
+            <section className="">
+                <div className="">
                     <table className="table table-xs table-zebra-zebra">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>({jobs.length})</th>
                                 <th>Title</th>
                                 <th>Vacancy</th>
                                 <th>company</th>
@@ -31,7 +76,7 @@ const Jobs = () => {
                         </thead>
                         <tbody>
                             {
-                                jobs.map((job, index) => <tr key={job?._id} className="hover:scale-105 ease-in-out duration-200">
+                                jobs.map((job, index) => <tr key={job?._id} className="hover:scale-105 ease-in-out duration-300">
                                     <th>{index + 1}</th>
                                     <td>{job?.title}</td>
                                     <td>{job?.vacancy}</td>
@@ -39,15 +84,16 @@ const Jobs = () => {
                                     <td>{job?.address}</td>
                                     <td>{job?.lastDate}</td>
                                     <td>
-                                        <button className="">UP</button>
-                                        <button className="">Del</button>
+                                        <button className="mx-2">UP</button>
+                                        <button className="mx-2 text-red-600 text" onClick={() => handleDeleteJobItem(job)}><MdDelete />
+                                        </button>
                                     </td>
                                 </tr>)
                             }
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th></th>
+                                <th>({jobs.length})</th>
                                 <th>Title</th>
                                 <th>Vacancy</th>
                                 <th>company</th>

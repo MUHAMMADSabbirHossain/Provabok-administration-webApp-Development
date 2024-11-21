@@ -6,7 +6,7 @@ const useJobs = () => {
     // const axiosPublic = useAxiosPublic();
     const axiosPrivate = useAxiosPrivate();
 
-    const { data: jobs = [], } = useQuery({
+    const { data: jobs = [], refetch } = useQuery({
         queryKey: [`jobs`], queryFn: async () => {
             const jobsRes = await axiosPrivate.get(`/v1/jobs`);
             // console.log(jobsRes.data);
@@ -15,7 +15,7 @@ const useJobs = () => {
         },
     });
 
-    return { jobs };
+    return { jobs, refetch };
 };
 
 export default useJobs;
