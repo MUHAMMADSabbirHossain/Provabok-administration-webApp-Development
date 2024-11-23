@@ -5,7 +5,7 @@ import About from '../pages/About/About';
 import Contact from '../pages/Contact/Contact';
 import Landing from '../pages/Landing/Landing';
 import Jobs from '../pages/Jobs/Jobs';
-import CreateItem from '../pages/Jobs/CreateItem/CreateItem';
+import CreateItem from '../pages/Jobs/Circulars/Circular/CreateItem/CreateItem';
 import EditItem from '../pages/Jobs/EditItem/EditItem';
 
 const routers = createBrowserRouter([
@@ -36,7 +36,7 @@ const routers = createBrowserRouter([
                 element: <Jobs></Jobs>,
             },
             {
-                path: `jobs/create-item`,
+                path: `jobs/circulars/create-item`,
                 element: <CreateItem></CreateItem>
             },
             {

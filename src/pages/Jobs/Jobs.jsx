@@ -57,7 +57,7 @@ const Jobs = () => {
             Jobs
             <div className="card  flex flex-row justify-center">
                 <Link to={`/jobs`} className="btn m-5 bg-primary-content shadow-2xl">All Items</Link>
-                <Link to={`/jobs/create-item`} className="btn m-5 bg-primary-content shadow-2xl">Create Item</Link>
+                <Link to={`/jobs/circulars/create-item`} className="btn m-5 bg-primary-content shadow-2xl">Create Circular</Link>
             </div>
 
 

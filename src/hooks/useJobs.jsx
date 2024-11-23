@@ -8,7 +8,7 @@ const useJobs = () => {
 
     const { data: jobs = [], refetch } = useQuery({
         queryKey: [`jobs`], queryFn: async () => {
-            const jobsRes = await axiosPrivate.get(`/v1/jobs`);
+            const jobsRes = await axiosPrivate.get(`/v1/jobs/circulars`);
             // console.log(jobsRes.data);
 
             return (jobsRes.data);
