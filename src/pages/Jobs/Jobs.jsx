@@ -83,7 +83,7 @@ const Jobs = () => {
                                     <td>{job?.title}</td>
                                     <td>{job?.total_vacancy}</td>
                                     <td>{job?.institution?.name}</td>
-                                    <td>-{ }</td>
+                                    <td>{job?.posts?.length}</td>
                                     <td>{job?.address}</td>
                                     <td>{job?.apply?.close_date}</td>
                                     <td>
