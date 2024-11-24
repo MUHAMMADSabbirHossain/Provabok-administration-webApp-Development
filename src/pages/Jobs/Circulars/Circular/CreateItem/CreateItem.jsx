@@ -166,7 +166,7 @@ const CreateItem = () => {
             // console.log(circular);
 
             // seve data in Database
-            const serverRes = await axiosPrivate.post(`/v1/jobs/create-item`, circular);
+            const serverRes = await axiosPrivate.post(`/v1/jobs/circulars/create-item`, circular);
             // console.log(serverRes);
 
             if (serverRes?.data?.insertedId) {

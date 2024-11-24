@@ -26,7 +26,7 @@ const Jobs = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 // delete api req from database
-                const delItemRes = await axiosPrivate.delete(`/v1/jobs/del-item/${job._id}`);
+                const delItemRes = await axiosPrivate.delete(`/v1/jobs/circulars/del-item/${job._id}`);
                 console.log(delItemRes.data);
 
                 // successfully deleted
@@ -69,7 +69,8 @@ const Jobs = () => {
                                 <th>({jobs.length})</th>
                                 <th>Title</th>
                                 <th>Vacancy</th>
-                                <th>company</th>
+                                <th>Institution</th>
+                                <th>Posts</th>
                                 <th>location</th>
                                 <th>Last Date</th>
                                 <th>Action</th>
@@ -80,12 +81,13 @@ const Jobs = () => {
                                 jobs.map((job, index) => <tr key={job?._id} className="hover:scale-105 ease-in-out duration-300">
                                     <th>{index + 1}</th>
                                     <td>{job?.title}</td>
-                                    <td>{job?.vacancy}</td>
-                                    <td>{job?.orgName}</td>
+                                    <td>{job?.total_vacancy}</td>
+                                    <td>{job?.institution?.name}</td>
+                                    <td>-{ }</td>
                                     <td>{job?.address}</td>
-                                    <td>{job?.lastDate}</td>
+                                    <td>{job?.apply?.close_date}</td>
                                     <td>
-                                        <Link to={`/jobs/edit-item/${job._id}`}><button className="mx-2 text-yellow-500" ><RiFileEditFill /></button></Link>
+                                        <Link to={`/jobs/circulars/update-item/${job._id}`}><button className="mx-2 text-yellow-500" ><RiFileEditFill /></button></Link>
                                         <button className="mx-2 text-red-600 text" onClick={() => handleDeleteJobItem(job)}><MdDelete />
                                         </button>
                                     </td>
@@ -97,7 +99,8 @@ const Jobs = () => {
                                 <th>({jobs.length})</th>
                                 <th>Title</th>
                                 <th>Vacancy</th>
-                                <th>company</th>
+                                <th>Institution</th>
+                                <th>Posts</th>
                                 <th>location</th>
                                 <th>Last Date</th>
                                 <th>Action</th>
