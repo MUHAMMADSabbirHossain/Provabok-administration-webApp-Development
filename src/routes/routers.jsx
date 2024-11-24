@@ -6,7 +6,7 @@ import Contact from '../pages/Contact/Contact';
 import Landing from '../pages/Landing/Landing';
 import Jobs from '../pages/Jobs/Jobs';
 import CreateItem from '../pages/Jobs/Circulars/Circular/CreateItem/CreateItem';
-import EditItem from '../pages/Jobs/EditItem/EditItem';
+import UpdateItem from '../pages/Jobs/Circulars/Circular/UpdateItem/UpdateItem';
 
 const routers = createBrowserRouter([
     {
@@ -40,8 +40,8 @@ const routers = createBrowserRouter([
                 element: <CreateItem></CreateItem>
             },
             {
-                path: `jobs/edit-item/:id`,
-                element: <EditItem></EditItem>
+                path: `jobs/circulars/update-item/:id`,
+                element: <UpdateItem></UpdateItem>
             },
         ],
     },
