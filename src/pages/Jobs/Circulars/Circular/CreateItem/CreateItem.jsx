@@ -37,19 +37,19 @@ const CreateItem = () => {
         const title = form.get(`title`);
         const institution_name = form.get(`institutionName`);
         // const institution_logo_file = form.get(`institutionLogofile`); // try later;
-        const categories = form.get(`institutionCategories`);
-        const industrial_categories = form.get(`InstrialCategories`) === null ? `` : { name: form.get(`InstrialCategories`).split(`,`)[0], bnagla_name: form.get(`InstrialCategories`).split(`,`)[1] };
+        const status = form.get(`institutionCategories`);
+        const industrial_categories = form.get(`InstrialCategories`) === null ? `` : { name: form.get(`InstrialCategories`).split(`,`)[0], bangla_name: form.get(`InstrialCategories`).split(`,`)[1] };
         const work_from = form.get(`workFrom`)
+        const working_period = form.get(`workingPeriod`);
         const email = form.get(`email`);
         const mobile_phone = form.get(`mobilePhone`)
         const address = form.get(`address`);
-        const working_period = form.get(`workingPeriod`);
         const apply_start_date = form.get(`applyStartDate`);
         const apply_close_date = form.get(`applyCloseDate`);
-        const circular_image_file = form.get(`circularImageFile`);
-        const source_web_link = form.get(`sourceWebLink`);
         const apply_medium = form.get(`applyMedium`);
         const apply_link = form.get(`applyLink`);
+        const source_web_link = form.get(`sourceWebLink`);
+        const circular_image_file = form.get(`circularImageFile`);
         const description = form.get(`description`);
 
         posts.map((post, index) => {
@@ -59,21 +59,45 @@ const CreateItem = () => {
             // console.log("line: ", form.get(`post${index}Title`));
 
             prePosts[index].title = form.get(`post${index}Title`);
+            prePosts[index].name = ``;
             prePosts[index].vacancy = form.get(`post${index}Vacancy`);
             prePosts[index].summary = form.get(`post${index}Summary`);
-            prePosts[index].requirements = ``;
-            prePosts[index].qualifications = {
-                graduations: form.get(`post${index}Education`),
-                experience: form.get(`post${index}Experience`),
-                skills: form.get(`post${index}Skills`),
+            prePosts[index].requirements = {
+                gender: form.get(`post${index}Gender`),
+                qualifications: {
+                    graduations: form.get(`post${index}Education`),
+                    experiences: form.get(`post${index}Experience`),
+                    skills: form.get(`post${index}Skills`),
+                    certificates: ``,
+                },
             };
             prePosts[index].responsibilities = { task: ``, additional: `` };
-            prePosts[index].working_period = form.get(`post${index}WorkingPeriod`);
+            prePosts[index].working = {
+                style: ``,
+                period: form.get(`post${index}WorkingPeriod`),
+                address: form.get(`post${index}Address`),
+                location: ``,
+            };
             prePosts[index].purpose = ``;
             prePosts[index].benefits = ``;
-            prePosts[index].address = form.get(`post${index}Address`);
+            prePosts[index].apply = {
+                start_date: ``,
+                close_date: ``,
+                medium: ``,
+                link: ``,
+                fee: form.get(`post${index}ApplyFee`),
+                guidelines: ``,
+            };
+            prePosts[index].sources = {
+                link: ``,
+                /*image: {
+                    display_url,
+                    img_url,
+                    delete_rl,
+                    thumb_url,
+                }, */
+            };
             prePosts[index].salary = form.get(`post${index}Salary`);
-            prePosts[index].apply_fee = form.get(`post${index}ApplyFee`);
             prePosts[index].details = ``;
             prePosts[index].description = form.get(`post${index}Description`);
             // console.log(prePosts);
@@ -87,40 +111,48 @@ const CreateItem = () => {
             institution: {
                 name: institution_name, // Bangladesh Bank
                 logo: ``, // institution_logo will be implemented later, while including company DB.
-                institution_types: {
-                    categories, // govt , non-govt/ngo,
-                    industrial_categories, //
-                    work_from, // onsite or remote or hybrid      
+                types: {
+                    status, // govt , non-govt/ngo,
+                    industrial_categories, // 
                 },
+            },
+            working: {
+                style: work_from, // onsite or remote or hybrid      
+                period: working_period,
             },
             total_vacancy: posts.reduce((total, current) => total + parseInt(current?.vacancy), 0),
             contact: {
-                email,
                 number: {
                     land_phone: ``,
                     mobile_phone,
                     fax: ``,
                 },
+                online: {
+                    email,
+                    website: ``,
+                    linked: ``,
+                    x: ``,
+                    facebook: ``,
+                    youtube: ``,
+                },
                 address,
                 location: ``,
             },
-            working_period,
             apply: {
                 start_date: apply_start_date,
                 close_date: apply_close_date,
                 medium: apply_medium,
                 link: apply_link,
-                total_fee: posts.reduce((total, current) => total + parseInt(current?.apply_fee), 0)
+                total_fee: posts.reduce((total, current) => total + parseInt(current?.apply?.fee), 0),
             },
-            image: {},
-            /* image: {
+            sources: {
+                link: source_web_link,
+                /* image: {
                 display_url,
                 img_url,
                 delete_rl,
                 thumb_url,
             }, */
-            source_links: {
-                website: source_web_link,
             },
             details: ``,
             description,
@@ -130,24 +162,60 @@ const CreateItem = () => {
                     // post._id,
                     title,
                     vacancy,
-                    requirements, // objects 
+                    requirements: {
+                        gender: ``,
+                        qualifications: {
+                            graduation,
+                            experience,
+                            skills,
+                            certificates: ``,
+                        },
+                    }, // objects  
                     address,
                     summary,
-                    purpose,
-                    qualifications: {
-                        education,
-                        experience,
-                        skills,
-                    },
                     responsibilities: {
                         tasks,
                         additional,
                     },
-                    working_period,
+                    working: {
+                        style: ``, // onsite or remote or hybrid      
+                        period: ``, // hours
+                        from: ``, // onsite, remote, hybride
+                        address: {
+                            street_number: ``,
+                            house_number: ``,
+                            county: ``,
+                            recipient_name: ``,
+                            district: ``,
+                            town: ``,
+                            village: ``,
+                            city: ``,
+                            country: ``,
+                            post_code: ``,
+                            road_no: ``,
+                        },
+                        location: ``,
+                    },
+                    purpose,
+                    apply: {
+                        start_date: apply_start_date,
+                        close_date: apply_close_date,
+                        medium: apply_medium,
+                        // link: apply_link,
+                        link: apply_link, // apply link
+                        total_fee: posts.reduce((total, current) => total + parseInt(current?.apply_fee), 0)
+                    },
+                    source: {
+                        link: source_web_link, // source link
+                        image: {
+                            display_url,
+                            img_url,
+                            delete_rl,
+                            thumb_url,
+                        }, 
+                    },
                     benefits,
-                    address,
                     salary,
-                    apply_fee,
                     details,
                     description,
                 },
@@ -162,7 +230,7 @@ const CreateItem = () => {
 
         if (circularImgUploadedRes?.display_url) {
             // add the img url link in the circular object
-            circular.image = circularImgUploadedRes;
+            circular.sources.image = circularImgUploadedRes;
             // console.log(circular);
 
             // seve data in Database
@@ -441,6 +509,35 @@ const CreateItem = () => {
                                                         <span className="label-text">Apply fee</span>
                                                     </label>
                                                     <input type="number" name={`post${index}ApplyFee`} id={`post${index}ApplyFee`} className="input input-bordered shadow-2xl rounded-2xl" placeholder="0" />
+                                                </div>
+
+                                                <div className="form-control ">
+                                                    <label className="label">
+                                                        <span className="label-text">Gender</span>
+                                                    </label>
+
+                                                    <div className="grid grid-cols-2 px-3 py-4 border input-bordered rounded-2xl shadow-2xl p-2">
+                                                        <div className="form-control">
+                                                            <label className="label">
+                                                                <span className="label-text">Male</span>
+                                                            </label>
+                                                            <input type="radio" name={`post${index}Gender`} className="radio" value={`male`} />
+                                                        </div>
+
+                                                        <div className="form-control ">
+                                                            <label className="label">
+                                                                <span className="label-text">Female</span>
+                                                            </label>
+                                                            <input type="radio" name={`post${index}Gender`} className="radio" value={`female`} />
+                                                        </div>
+
+                                                        <div className="form-control">
+                                                            <label className="label">
+                                                                <span className="label-text">Both</span>
+                                                            </label>
+                                                            <input type="radio" name={`post${index}Gender`} className="radio" value={`both`} />
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 <div className="form-control ">
